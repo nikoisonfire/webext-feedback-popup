@@ -1,1 +1,1 @@
-# web-ext-ask4rating
+# web-ext-feedbackprompt
