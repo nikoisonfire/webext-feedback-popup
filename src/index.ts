@@ -1,10 +1,10 @@
 "use strict";
 import detect, { Browser } from "./detection";
 
-import * as chrome_icon from "./icons/chrome-logo.png";
-import * as safari_icon from "./icons/safari-logo.png";
-import * as edge_icon from "./icons/edge-logo.png";
-import * as firefox_icon from "./icons/firefox-logo.png";
+import * as chrome_icon from "url:./icons/chrome-logo.png";
+import * as safari_icon from "url:./icons/safari-logo.png";
+import * as edge_icon from "url:./icons/edge-logo.png";
+import * as firefox_icon from "url:./icons/firefox-logo.png";
 
 class WebExtRatingModal {
   // Frontend modal features
@@ -28,6 +28,12 @@ class WebExtRatingModal {
   // Manual Mode to control the modal manually (default: disabled)
   private _manual = false;
 
+  // Light/Dark Theme
+  private _theme = "light";
+
+  private _onOpen: () => void;
+  private _onClose: () => void;
+
   /**
    * Modal constructor.
    * @param window The current sites window object (usually just 'window')
@@ -47,6 +53,9 @@ class WebExtRatingModal {
     storeLinks,
     logo,
     timeout,
+    theme,
+    onOpen,
+    onClose,
   }: {
     window: Window;
     headline: string;
@@ -55,6 +64,9 @@ class WebExtRatingModal {
     storeLinks: Record<Browser, string>;
     logo?: string;
     timeout?: number;
+    theme?: string;
+    onOpen?: () => void;
+    onClose?: () => void;
   }) {
     this._document = window.document;
     this._window = window;
@@ -66,12 +78,22 @@ class WebExtRatingModal {
     this._timeout = timeout || 0;
     this._installDate = new Date(installDate) || Date.now();
 
+    this._theme = theme || "light";
     this._storeLinks = storeLinks;
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const noop = function () {};
+
+    // use parameter function or do nothing
+    this._onOpen = onOpen || noop;
+    this._onClose = onClose || noop;
 
     // Show the modal if it's showtime and manual-mode is disabled (default)
     if (this.isShowtime() && !this._manual) {
-      this.addDefaultStyles();
+      this.addDefaultStyles(this._theme);
       this.addModalToDocument();
+      this.toggleBodyScroll();
+      this._onOpen();
     }
   }
 
@@ -82,8 +104,8 @@ class WebExtRatingModal {
     this._document.head.appendChild(style);
   };
 
-  public addDefaultStyles = (): void => {
-    const defaultStyles = `
+  public addDefaultStyles = (theme: string): void => {
+    const darkTheme = `
         .fbm-blur {
             position: fixed;
             z-index: 3;
@@ -93,7 +115,93 @@ class WebExtRatingModal {
         
             left: 0;
             top: 0;
-            background-color: #00000040;
+            background-color: #00000080;
+        }
+        
+        @keyframes modalAnimation {
+            from {
+                top: 45%;
+            }
+            to {
+                top: 50%;
+            }
+        }
+        .fbm-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        
+            transform: translate(-50%, -50%);
+            animation-name: modalAnimation;
+            animation-duration: 1.5s;
+            animation-delay: 0.2s;
+        
+            background-color: #1D2D50;
+            border-radius: 25px;
+            padding: 15px;
+        
+            color: #F8F0E3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .fbm-modal .fbm-headline {
+            text-align: center;
+            display: block;
+            width: 100%;
+            padding: 0 0 5px 15px;
+            font-size: 1.4rem;
+            font-family: inherit;
+            margin: 0;
+        }
+        .fbm-modal .fbm-text {
+            font-size: 1.1rem;
+            line-height: 2;
+            padding: 30px 15px;
+        }
+        .fbm-modal .fbm-button {
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            padding: 12px 20px;
+            background-color: #3D517B;
+            transition: 0.2s ease-in;
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .fbm-modal .fbm-button:hover {
+            background-color: #3D517B80;
+        }
+        .fbm-modal .fbm-button:focus {
+            outline: none;
+        }
+        .fbm-modal .fbm-button img {
+          margin-right: 7px;
+        }
+        .fbm-modal .fbm-logo {
+            width: 50%;
+            margin-bottom: 20px;
+        }
+        .fbm-modal .fbm-logo:focus {
+            outline: none;
+        }
+    `;
+    const lightTheme = `
+        .fbm-blur {
+            position: fixed;
+            z-index: 3;
+        
+            width: 100vw;
+            height: 100vh;
+        
+            left: 0;
+            top: 0;
+            background-color: #00000080;
         }
         @keyframes modalAnimation {
             from {
@@ -124,17 +232,18 @@ class WebExtRatingModal {
             justify-content: space-between;
         }
         .fbm-modal .fbm-headline {
+            text-align: center;
             display: block;
             width: 100%;
             padding: 0 0 5px 15px;
-            font-size: 24px;
+            font-size: 1.4rem;
             font-family: inherit;
             margin: 0;
         }
         .fbm-modal .fbm-text {
-            font-size: 18px;
+            font-size: 1.1rem;
             line-height: 2;
-            padding: 15px;
+            padding: 30px 15px;
         }
         .fbm-modal .fbm-button {
             background-position: 10px 10px;
@@ -145,7 +254,9 @@ class WebExtRatingModal {
             transition: 0.2s ease-in;
             color: white;
             border: none;
-            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 100%;
         }
         .fbm-modal .fbm-button:hover {
@@ -153,6 +264,9 @@ class WebExtRatingModal {
         }
         .fbm-modal .fbm-button:focus {
             outline: none;
+        }
+        .fbm-modal .fbm-button img {
+          margin-right: 7px;
         }
         .fbm-modal .fbm-logo {
             width: 50%;
@@ -162,7 +276,8 @@ class WebExtRatingModal {
             outline: none;
         }
     `;
-    this.setStyle(defaultStyles);
+    const choice = theme === "dark" ? darkTheme : lightTheme;
+    this.setStyle(choice);
   };
 
   private createElement(tagName: string): HTMLElement {
@@ -206,9 +321,11 @@ class WebExtRatingModal {
     blurEl.appendChild(modalEl);
 
     // Close the Modal when clicked anywhere outside the modal (aka the blur element)
-    blurEl.addEventListener("click", () =>
-      this._document.body.removeChild(blurEl)
-    );
+    blurEl.addEventListener("click", () => {
+      this._document.body.removeChild(blurEl);
+      this.toggleBodyScroll();
+      this._onClose();
+    });
 
     // Append the modal to the document body.
     this._document.body.appendChild(blurEl);
@@ -223,9 +340,9 @@ class WebExtRatingModal {
     const button: HTMLElement = this.createElement("button");
     button.classList.add("fbm-button");
 
-    button.style.backgroundImage = `url(${logo})`;
+    const imgTag = `<img src="${logo.default}"/>`;
 
-    button.innerHTML = btnHtml;
+    button.innerHTML = imgTag + btnHtml;
     button.addEventListener("click", () => this.redirectTo(link));
 
     return button;
@@ -269,7 +386,7 @@ class WebExtRatingModal {
       (el) => browser[el as Browser] === true
     );
 
-    if (filter.length == 0) {
+    if (filter.length === 0) {
       return "https://www.google.de";
     }
     // More than one engine was detected (i.e. Chrome -> Chrome + Webkit)
@@ -311,6 +428,16 @@ class WebExtRatingModal {
       return edge_icon;
     }
     return chrome_icon;
+  };
+
+  private toggleBodyScroll = () => {
+    if (this._document.body.style.position === "fixed") {
+      this._document.body.style.height = "100vh";
+      this._document.body.style.overflowY = "hidden";
+    } else {
+      this._document.body.style.height = "";
+      this._document.body.style.overflowY = "";
+    }
   };
 
   public get timeout(): number {
