@@ -1,5 +1,6 @@
 "use strict";
 import detect, { Browser } from "./detection";
+import { browser } from "webextension-polyfill-ts";
 
 import * as chrome_icon from "url:./icons/chrome-logo.png";
 import * as safari_icon from "url:./icons/safari-logo.png";
@@ -27,6 +28,9 @@ class WebExtRatingModal {
 
   // Manual Mode to control the modal manually (default: disabled)
   private _manual = false;
+
+  // default: only show once
+  private _frequency = 1;
 
   // Light/Dark Theme
   private _theme = "light";
@@ -90,10 +94,9 @@ class WebExtRatingModal {
 
     // Show the modal if it's showtime and manual-mode is disabled (default)
     if (this.isShowtime() && !this._manual) {
-      this.addDefaultStyles(this._theme);
-      this.addModalToDocument();
-      this.toggleBodyScroll();
-      this._onOpen();
+      if (!this.isShownEnoughTimes()) {
+        this.showModal();
+      }
     }
   }
 
@@ -322,9 +325,7 @@ class WebExtRatingModal {
 
     // Close the Modal when clicked anywhere outside the modal (aka the blur element)
     blurEl.addEventListener("click", () => {
-      this._document.body.removeChild(blurEl);
-      this.toggleBodyScroll();
-      this._onClose();
+      this.hideModal(blurEl);
     });
 
     // Append the modal to the document body.
@@ -361,16 +362,81 @@ class WebExtRatingModal {
     this._window.open(link, "_blank");
   };
 
+  private showModal = (): void => {
+    this.addDefaultStyles(this._theme);
+    this.addModalToDocument();
+    this.addToCache();
+    this.toggleBodyScroll();
+    this._onOpen();
+  };
+  private hideModal = (element: HTMLElement): void => {
+    this._document.body.removeChild(element);
+    this.toggleBodyScroll();
+    this._onClose();
+  };
+
+  private addToCache = (): void => {
+    console.log("adding to cache", browser.storage.local);
+    browser.storage.local
+      .get("feedbackprompt")
+      .then((data) => {
+        if (data.feedbackprompt && data.feedbackprompt.length > 0) {
+          const times = data.feedbackprompt;
+          times.push(Date.now());
+          browser.storage.local.set({ feedbackprompt: times });
+        } else {
+          const initialArr = [Date.now()];
+          browser.storage.local.set({ feedbackprompt: initialArr });
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   // Is it time to show the modal yet? (true/false)
   private isShowtime = (): boolean => {
     const now = new Date(Date.now());
-    const timePassed = now.getTime() - this._installDate.getTime();
+    // Declaration if the modal hasn't been shown already.
+    let lastDate = this._installDate.getTime();
+
+    // If the modal is already shown use the last "shown" date, not the installDate
+    browser.storage.local
+      .get("feedbackprompt")
+      .then((data) => {
+        if (data.feedbackprompt && data.feedbackprompt.length > 0) {
+          const times = data.feedbackprompt;
+          lastDate = times[times.length - 1];
+        }
+      })
+      .catch((error) => console.log(error));
+
+    // Calculate the time passed to see if it's time to show the modal again
+    const timePassed = now.getTime() - lastDate;
 
     if (timePassed > this._timeout) {
       return true;
     } else {
       return false;
     }
+  };
+
+  // TODO: async flag change ?? cb??
+
+  // check if modal has already been shown too many times
+  private isShownEnoughTimes = (): boolean => {
+    let flag = false;
+    browser.storage.local
+      .get("feedbackprompt")
+      .then((data) => {
+        if (data.feedbackprompt && data.feedbackprompt.length > 0) {
+          const times = data.feedbackprompt;
+          console.log("Freq:", this._frequency, "t-length:", times.length);
+          if (times.length >= this._frequency) {
+            flag = true;
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+    console.log("flag: ", flag);
+    return flag;
   };
 
   /**
