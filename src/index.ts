@@ -39,15 +39,8 @@ class WebExtRatingModal {
   private _onClose: () => void;
 
   /**
-   * Modal constructor.
-   * @param window The current sites window object (usually just 'window')
-   * @param headline Headline for the modal window (default: I'm waiting for your rating!)
-   * @param text Feedback text/HTML to be shown below the headline
-   * @param installDate Date the extension was installed (read the docs for more info)
-   * @param ffLink (optional) Link to Firefox Addons
-   * @param chromeLink (optional) Link to Chrome Web Store
-   * @param logo (optional) Extension Logo, or leave blank
-   * @param timeout (optional, but recommended) Timeout like "7 days", "3 months", ... (read the docs)
+   * Constructor
+   * @param param0 object (see the docs for parameters)
    */
   constructor({
     window,
@@ -70,7 +63,7 @@ class WebExtRatingModal {
     logo?: string;
     frequency?: number;
     timeout?: number;
-    theme?: string;
+    theme?: "dark" | "light";
     onOpen?: () => void;
     onClose?: () => void;
   }) {
@@ -106,13 +99,20 @@ class WebExtRatingModal {
     });
   }
 
-  // Set Modal CSS styling
+  /**
+   * Add the styles of the modal to <style> tag inserted into the document <head>
+   * @param styleRules : string, CSS style rules
+   */
   public setStyle = (styleRules: string): void => {
     const style = this.createElement("style");
     style.innerHTML = styleRules;
     this._document.head.appendChild(style);
   };
 
+  /**
+   * Add the default styles based on the chosen theme
+   * @param theme "light" / "dark"
+   */
   public addDefaultStyles = (theme: string): void => {
     const darkTheme = `
         .fbm-blur {
@@ -267,6 +267,7 @@ class WebExtRatingModal {
             justify-content: center;
             align-items: center;
             width: 100%;
+            font-size: 1.1em;
         }
         .fbm-modal .fbm-button:hover {
             background-color: #e1462c80;
@@ -289,11 +290,11 @@ class WebExtRatingModal {
     this.setStyle(choice);
   };
 
+  // Shortform create a HTMLElement
   private createElement(tagName: string): HTMLElement {
     return this._document.createElement(tagName);
   }
-  // Add Modal to Document
-  // document.body.appendChild(document.createElement('div'))
+  // Add Modal to user-specified Document object
   private addModalToDocument = (): void => {
     const blurEl: HTMLElement = this.createElement("div");
     const modalEl: HTMLElement = this.createElement("div");
@@ -303,9 +304,8 @@ class WebExtRatingModal {
     const logo = this.createLogo(this._logo);
 
     const button = this.createButton(
-      "Test 1234",
       this.getCorrectStoreLink(),
-      this.getCorrectBrowserLogo()
+      this.getCorrectStoreButton()
     );
 
     headline.classList.add("fbm-headline");
@@ -337,23 +337,25 @@ class WebExtRatingModal {
     this._document.body.appendChild(blurEl);
   };
 
-  // Returns an HTMLElement Button representation with a redirect after
-  private createButton = (
-    btnHtml: string,
-    link: string,
-    logo: any
-  ): HTMLElement => {
+  /**
+   * Returns an HTMLElement Button representation with a onClick redirect
+   * @param link string: url the user get's redirected to on click
+   * @param buttonContent Array: [store icon, store button text]
+   * @returns HTMLElement : r2u button element
+   */
+  private createButton = (link: string, buttonContent: any): HTMLElement => {
     const button: HTMLElement = this.createElement("button");
     button.classList.add("fbm-button");
 
-    const imgTag = `<img src="${logo.default}"/>`;
+    const imgTag = `<img src="${buttonContent[0].default}"/>`;
 
-    button.innerHTML = imgTag + btnHtml;
+    button.innerHTML = imgTag + buttonContent[1];
     button.addEventListener("click", () => this.redirectTo(link));
 
     return button;
   };
 
+  // Create Logo Element from source
   private createLogo = (src: string): HTMLImageElement => {
     const logo = this._document.createElement("img");
     logo.classList.add("fbm-logo");
@@ -367,6 +369,9 @@ class WebExtRatingModal {
     this._window.open(link, "_blank");
   };
 
+  /**
+   * Show the modal.
+   */
   private showModal = (): void => {
     this.addDefaultStyles(this._theme);
     this.addModalToDocument();
@@ -374,12 +379,19 @@ class WebExtRatingModal {
     this.toggleBodyScroll();
     this._onOpen();
   };
+  /**
+   * Hide the modal.
+   * @param element fbm-blur div as HTMLElement
+   */
   private hideModal = (element: HTMLElement): void => {
     this._document.body.removeChild(element);
     this.toggleBodyScroll();
     this._onClose();
   };
 
+  /**
+   * After opening the modal, add the timestamp to localStorage (for below checks)
+   */
   private addToCache = (): void => {
     browser.storage.local
       .get("feedbackprompt")
@@ -395,7 +407,11 @@ class WebExtRatingModal {
       })
       .catch((error) => console.log(error));
   };
-  // Is it time to show the modal yet? (true/false)
+
+  /**
+   * Check if timeout has expired and modal can be shown
+   * @returns Promise : true => show modal | false => don't show modal
+   */
   private isShowtime = async () => {
     return new Promise((resolve, reject) => {
       // If the modal is already shown use the last "shown" date, not the installDate
@@ -424,7 +440,12 @@ class WebExtRatingModal {
     });
   };
 
-  // check if modal has already been shown too many times
+  // TODO : Forge these two functions together because of confusion and redundancy
+
+  /**
+   * Based on the specified frequency, show the modal yes(false)/no(true)
+   * @returns Promise: true => don't show modal anymore | false => show it, has been shown less time than specified frequency
+   */
   private isShownEnoughTimes = async () => {
     return new Promise((resolve, reject) => {
       browser.storage.local
@@ -478,7 +499,11 @@ class WebExtRatingModal {
     );
   };
 
-  private getCorrectBrowserLogo = () => {
+  /**
+   * Returns the corresponding browser logo and button text
+   * @returns [logo "image object"? (see imports), corresponding button text]
+   */
+  private getCorrectStoreButton = (): any => {
     const browser = detect(navigator.userAgent);
 
     // @ts-nolint-nextline
@@ -487,21 +512,24 @@ class WebExtRatingModal {
     );
 
     if (filter.includes("chrome")) {
-      return chrome_icon;
+      return [chrome_icon, "Visit the Chrome Web Store"];
     }
     if (filter.includes("firefox")) {
-      return firefox_icon;
+      return [firefox_icon, "Visit Firefox Addons"];
     }
     if (filter.includes("safari")) {
-      return safari_icon;
+      return [safari_icon, "Visit the App Store"];
     }
     if (filter.includes("edge")) {
-      return edge_icon;
+      return [edge_icon, "Visit the Microsoft Store"];
     }
     return chrome_icon;
   };
 
-  private toggleBodyScroll = () => {
+  /**
+   * Toggles scrolling the body (on/off) when the modal is open or closed
+   */
+  private toggleBodyScroll = (): void => {
     if (this._document.body.style.position === "fixed") {
       this._document.body.style.height = "100vh";
       this._document.body.style.overflowY = "hidden";
@@ -531,13 +559,15 @@ class WebExtRatingModal {
   public set installDate(value) {
     this._installDate = value;
   }
+  /* 
+BETA
 
   public get manual() {
     return this._manual;
   }
   public set manual(value) {
     this._manual = value;
-  }
+  } */
 }
 
 export default WebExtRatingModal;
