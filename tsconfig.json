@@ -29,8 +29,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/icons/*.png"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",

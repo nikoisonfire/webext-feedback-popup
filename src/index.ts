@@ -7,7 +7,7 @@ import * as safari_icon from "url:./icons/safari-logo.png";
 import * as edge_icon from "url:./icons/edge-logo.png";
 import * as firefox_icon from "url:./icons/firefox-logo.png";
 
-class WebExtRatingModal {
+class WebExtFeedbackPrompt {
   // Frontend modal features
   _headline = "I'm waiting for your rating!";
   _text = "";
@@ -570,4 +570,4 @@ BETA
   } */
 }
 
-export default WebExtRatingModal;
+export default WebExtFeedbackPrompt;

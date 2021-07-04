@@ -15,7 +15,7 @@ function detect(userAgent: string): BrowserObject {
     return browser;
   }
 
-  const webkit = userAgent.match(/Web[kK]it[\/]{0,1}([\d.]+)/);
+  const webkit = userAgent.match(/Web[kK]it[/]{0,1}([\d.]+)/);
   const chrome =
     userAgent.match(/Chrome\/([\d.]+)/) || userAgent.match(/CriOS\/([\d.]+)/);
   const firefox = userAgent.match(/Firefox\/([\d.]+)/);

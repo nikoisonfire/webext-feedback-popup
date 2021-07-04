@@ -1,4 +1,4 @@
-# webext-feedback-prompt
+# webext-feedbackprompt
 
 This is a package to display a modal/prompt to ask the user for a feedback/rating on the browsers addon stores (e.g. Chrome Web Store, Firefox Addons).
 
@@ -11,10 +11,10 @@ Currently supported:
 
 ## Installation
 
-Use the npm to install webext-feedback-prompt.
+Use the npm to install:
 
 ```bash
-npm install webext-feedback-prompt
+npm install webext-feedbackprompt
 ```
 
 ## Usage
