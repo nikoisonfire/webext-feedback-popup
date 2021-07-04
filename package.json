@@ -1,5 +1,5 @@
 {
-  "name": "web-ext-feedbackprompt",
+  "name": "webext-feedbackprompt",
   "version": "1.0.1",
   "description": "Web extension modal to ask for user rating after a specified time",
   "author": "Nikola Kretschmer <me@nkretschmer.com>",

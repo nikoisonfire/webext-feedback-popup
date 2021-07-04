@@ -9,6 +9,11 @@ Currently supported:
 - Edge
 - Safari
 
+## Screenshots
+
+![light theme](./light.png);
+![dark theme](./dark.png);
+
 ## Installation
 
 Use the npm to install:
