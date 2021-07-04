@@ -1,6 +1,6 @@
-import WebExtRatingModal from "./index";
+//import WebExtFeedbackPopup from "./index";
 
-const mock = new WebExtRatingModal(
+/* const mock = new WebExtFeedbackPopup({
   window,
   "Headline",
   "Text",
@@ -9,7 +9,7 @@ const mock = new WebExtRatingModal(
   "https://chrome.google.com/webstore/detail/https-everywhere/gcbommkclmclpchllfjekcdonpmejbdp",
   "",
   2000
-);
+});
 
 test("constructor: should construct mock object", () => {
   expect(mock).toBeDefined();
@@ -62,3 +62,4 @@ test("redirectTo: should open new window", () => {
   spy.mockRestore();
   mock.window = oldWindow;
 });
+ */

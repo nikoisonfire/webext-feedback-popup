@@ -1,9 +1,9 @@
 {
-  "name": "webext-feedbackprompt",
+  "name": "webext-feedback-popup",
   "version": "1.0.1",
-  "description": "Web extension modal to ask for user rating after a specified time",
+  "description": "Timed Popup to gain store feedback & ratings from user",
   "author": "Nikola Kretschmer <me@nkretschmer.com>",
-  "repository": "https://github.com/nikoisonfire/webext-feedbackprompt",
+  "repository": "https://github.com/nikoisonfire/webext-feedback-popup",
   "license": "MIT",
   "keywords": [
     "web extension",

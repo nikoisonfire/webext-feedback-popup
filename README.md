@@ -1,6 +1,6 @@
-# webext-feedbackprompt
+# webext-feedback-popup
 
-This is a package to display a modal/prompt to ask the user for a feedback/rating on the browsers addon stores (e.g. Chrome Web Store, Firefox Addons).
+This is a package to display a popup to ask the user for a feedback/rating on the browsers addon stores (e.g. Chrome Web Store, Firefox Addons).
 
 Currently supported:
 
@@ -19,7 +19,7 @@ Currently supported:
 Use the npm to install:
 
 ```bash
-npm install webext-feedbackprompt
+npm install webext-feedback-popup
 ```
 
 ## Usage
@@ -29,12 +29,12 @@ You only have to initialize the modal using the constructor and a bunch of param
 It auto-detects the users browser and redirects them to the correct store.
 
 ```javascript
-import WebExtFeedbackPrompt from "webext-feedbackprompt";
+import WebExtFeedbackPopup from "webext-feedback-popup";
 
 // On some compilers this can be 'url:./xyz.png'
 import thisIsMyLogo from "./xyz.png";
 
-const fbm = new WebExtFeedbackPrompt({
+const fbm = new WebExtFeedbackPopup({
   window: window,
   headline: "Would you mind sparing some feedback?",
   text: "We've put a lot of love into this project, would you mind sharing your thoughts and maybe a feedback on it?",
@@ -54,7 +54,7 @@ const fbm = new WebExtFeedbackPrompt({
 
 ## Parameters
 
-The constructor `WebExtFeedbackPrompt` accepts an object with the following parameters:
+The constructor `WebExtFeedbackPopup` accepts an object with the following parameters:
 
 | name          | type                   | description                                                                                                                                   | default                        | must?    |
 | ------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------- |
@@ -105,7 +105,7 @@ browser.runtime.onInstalled.addListener(showWelcomePage);
 To go beyond the themes – or out of pure vanity – you can inject your own styles like this:
 
 ```javascript
-const fbm = new WebExtFeedbackPrompt({...});
+const fbm = new WebExtFeedbackPopup({...});
 const styleString = `
     .fbm-modal {
         background-color: darkgreen;
@@ -118,9 +118,15 @@ const styleString = `
 fbm.setStyle(styleString)
 ```
 
-**Warning**: Currently you cannot **overwrite** certain classes only unless you are using `!important` in your own stylesheets.
+**Warning**: Currently you cannot **overwrite** only certain classes, unless you are using `!important` in your own stylesheets.
 
 _setStyle(...) requires you to replace **all stylings** for the modal. You can find the default styling to customize certain classes here: [DEFAULT_STYLES.md](/DEFAULT_STYLES.md)._
+
+Classes are:
+
+- `fbm-blur` : parent container that's darkening the background
+- `fbm-modal` : modal-container
+- `fbm-headline / fbm-text / fbm-button / fbm-logo` : self explanatory
 
 ## Support
 
