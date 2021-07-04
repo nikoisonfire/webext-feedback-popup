@@ -58,9 +58,199 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#web-ext-feedbackprompt" id="web-ext-feedbackprompt" style="color: inherit; text-decoration: none;">
-					<h1>web-ext-feedbackprompt</h1>
+				<a href="#webext-feedback-prompt" id="webext-feedback-prompt" style="color: inherit; text-decoration: none;">
+					<h1>webext-feedback-prompt</h1>
 				</a>
+				<p>This is a package to display a modal/prompt to ask the user for a feedback/rating on the browsers addon stores (e.g. Chrome Web Store, Firefox Addons).</p>
+				<p>Currently supported:</p>
+				<ul>
+					<li>Chrome (and any chromium/webkit platform)</li>
+					<li>Firefox</li>
+					<li>Edge</li>
+					<li>Safari</li>
+				</ul>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p>Use the npm to install webext-feedback-prompt.</p>
+				<pre><code class="language-bash"><span style="color: #000000">npm install webext-feedback-prompt</span>
+</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p>You only have to initialize the modal using the constructor and a bunch of parameters, the rest is done for you.</p>
+				<p>It auto-detects the users browser and redirects them to the correct store.</p>
+				<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">WebExtFeedbackPrompt</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;webext-feedback-prompt&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #008000">// On some compilers this can be &#039;url:./xyz.png&#039;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #001080">thisIsMyLogo</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./xyz.png&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">fbm</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">WebExtFeedbackPrompt</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">window:</span><span style="color: #000000"> </span><span style="color: #001080">window</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">headline:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Would you mind sparing some feedback?&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">text:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;We&#039;ve put a lot of love into this project, would you mind sharing your thoughts and maybe a feedback on it?&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">installDate:</span><span style="color: #000000"> </span><span style="color: #001080">idate</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">frequency:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">timeout:</span><span style="color: #000000"> </span><span style="color: #098658">20000</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">logo:</span><span style="color: #000000"> </span><span style="color: #001080">thisIsMyLogo</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">storeLinks:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">firefox:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;https://addons.mozilla.org/de/firefox/addon/grammarly-1/&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">chrome:</span>
+<span style="color: #000000">      </span><span style="color: #A31515">&quot;https://chrome.google.com/webstore/detail/grammarly-for-chrome/kbfnbcaeplbcioakkpcpgfkobkghlhen&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">edge:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;https://www.microsoft.com/en-us/p/grammarly-for-microsoft-edge/9p59wxtbhzzm?activetab=pivot:overviewtab&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">safari:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;https://apps.apple.com/us/app/grammarly-for-safari/id1462114288&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				<a href="#parameters" id="parameters" style="color: inherit; text-decoration: none;">
+					<h2>Parameters</h2>
+				</a>
+				<p>The constructor <code>WebExtFeedbackPrompt</code> accepts an object with the following parameters:</p>
+				<table>
+					<thead>
+						<tr>
+							<th>name</th>
+							<th>type</th>
+							<th>description</th>
+							<th>default</th>
+							<th>must?</th>
+						</tr>
+					</thead>
+					<tbody><tr>
+							<td><code>window</code></td>
+							<td><code>Window</code></td>
+							<td>MUST-SPECIFIY. usually you can just use &quot;window&quot; as this is the standard window object</td>
+							<td><code>null</code></td>
+							<td>required</td>
+						</tr>
+						<tr>
+							<td><code>headline</code></td>
+							<td><code>string</code></td>
+							<td>Headline to show in the top of the modal</td>
+							<td>&quot;I&#39;m waiting for your rating!&quot;</td>
+							<td>required</td>
+						</tr>
+						<tr>
+							<td><code>text</code></td>
+							<td><code>string</code></td>
+							<td>Accompanied text</td>
+							<td>&quot;&quot;</td>
+							<td>required</td>
+						</tr>
+						<tr>
+							<td><code>installDate</code></td>
+							<td><code>Date</code></td>
+							<td>Date when the extension was installed (tip: see below)</td>
+							<td><code>null</code></td>
+							<td>required</td>
+						</tr>
+						<tr>
+							<td><code>storeLinks</code></td>
+							<td><code>Object</code> {browser: link, ...}</td>
+							<td>links to your products on the stores i.e. <code>{firefox: &quot;https://....&quot;, chrome: ...}</code></td>
+							<td>{}</td>
+							<td>required</td>
+						</tr>
+						<tr>
+							<td><code>logo</code></td>
+							<td><code>string</code></td>
+							<td>URL to the logo (see Usage)</td>
+							<td>&quot;&quot;</td>
+							<td>optional</td>
+						</tr>
+						<tr>
+							<td><code>frequency</code></td>
+							<td><code>number</code></td>
+							<td>How often you want to display the modal in total. The modal get&#39;s displayed in <code>timeout</code> intervals (e.g. every 7 days for 5 times total)</td>
+							<td>1</td>
+							<td>optional</td>
+						</tr>
+						<tr>
+							<td><code>timeout</code></td>
+							<td><code>number</code></td>
+							<td>in ms. When the modal is to be displayed after installDate. (e.g. &quot;In one week&quot; = <code>7*24*60*60*1000</code>)</td>
+							<td>0</td>
+							<td>optional</td>
+						</tr>
+						<tr>
+							<td><code>theme</code></td>
+							<td><code>string</code></td>
+							<td>&quot;dark&quot; | &quot;light&quot;</td>
+							<td>&quot;light&quot;</td>
+							<td>optional</td>
+						</tr>
+						<tr>
+							<td><code>onOpen</code></td>
+							<td><code>fn</code>: void</td>
+							<td>function that get&#39;s executed when the modal is opened, this can be useful for things like adding body-padding, sending stats to a server etc.</td>
+							<td>do Nothing</td>
+							<td>optional</td>
+						</tr>
+						<tr>
+							<td><code>onClose</code></td>
+							<td><code>fn</code>: void</td>
+							<td>function that get&#39;s executed when the modal is closed, this can be useful for things like removing body-padding, etc.</td>
+							<td>do Nothing</td>
+							<td>optional</td>
+						</tr>
+				</tbody></table>
+				<p><code>onOpen</code> and <code>onClose</code> can be very useful if you have issues with the layout not being displayed correctly when the modal is open</p>
+				<a href="#how-to-generate-an-installdate" id="how-to-generate-an-installdate" style="color: inherit; text-decoration: none;">
+					<h3>How to generate an installDate</h3>
+				</a>
+				<p>I used a method like this to generate an installDate in my extension:</p>
+				<p><code>background.js</code></p>
+				<pre><code class="language-javascript"><span style="color: #008000">// this uses: webext-options-sync (https://github.com/fregante/webext-options-sync)</span>
+
+<span style="color: #0000FF">async</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">showWelcomePage</span><span style="color: #000000">(</span><span style="color: #001080">details</span><span style="color: #000000">) {</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Generate a new date from now</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">now</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #267F99">Date</span><span style="color: #000000">.</span><span style="color: #795E26">now</span><span style="color: #000000">());</span>
+
+<span style="color: #000000">  </span><span style="color: #AF00DB">if</span><span style="color: #000000"> (</span><span style="color: #001080">details</span><span style="color: #000000">.</span><span style="color: #001080">reason</span><span style="color: #000000"> === </span><span style="color: #A31515">&quot;install&quot;</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Put the date into the optionsStorage</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">optionsStorage</span><span style="color: #000000">.</span><span style="color: #795E26">set</span><span style="color: #000000">({ </span><span style="color: #001080">installDate:</span><span style="color: #000000"> </span><span style="color: #001080">now</span><span style="color: #000000">.</span><span style="color: #795E26">toString</span><span style="color: #000000">() });</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Show the welcome page</span>
+<span style="color: #000000">    </span><span style="color: #001080">browser</span><span style="color: #000000">.</span><span style="color: #001080">tabs</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">({</span>
+<span style="color: #000000">      </span><span style="color: #001080">active:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #001080">url:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;https://...&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    });</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #008000">// Let the function listen to the onInstalled Event</span>
+<span style="color: #001080">browser</span><span style="color: #000000">.</span><span style="color: #001080">runtime</span><span style="color: #000000">.</span><span style="color: #001080">onInstalled</span><span style="color: #000000">.</span><span style="color: #795E26">addListener</span><span style="color: #000000">(</span><span style="color: #001080">showWelcomePage</span><span style="color: #000000">);</span>
+</code></pre>
+				<a href="#styling" id="styling" style="color: inherit; text-decoration: none;">
+					<h2>Styling</h2>
+				</a>
+				<p>To go beyond the themes – or out of pure vanity – you can inject your own styles like this:</p>
+				<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">fbm</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">WebExtFeedbackPrompt</span><span style="color: #000000">({...});</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">styleString</span><span style="color: #000000"> = </span><span style="color: #A31515">`</span>
+<span style="color: #A31515">    .fbm-modal {</span>
+<span style="color: #A31515">        background-color: darkgreen;</span>
+<span style="color: #A31515">        color: darkblue;</span>
+<span style="color: #A31515">        width: 300px;</span>
+<span style="color: #A31515">        height: 300px;</span>
+<span style="color: #A31515">    }</span>
+<span style="color: #A31515">`</span>
+
+<span style="color: #001080">fbm</span><span style="color: #000000">.</span><span style="color: #795E26">setStyle</span><span style="color: #000000">(</span><span style="color: #001080">styleString</span><span style="color: #000000">)</span>
+</code></pre>
+				<p><strong>Warning: Currently you cannot <em>overwrite</em> certain classes only unless you are using !important in your own stylesheets.</strong></p>
+				<p><strong>setStyle(...) requires you to replace <em>all stylings</em> for the modal. You can find the default styling to customize certain classes here: <a href="/DEFAULT_STYLES.md">DEFAULT_STYLES.md</a>.</strong></p>
+				<a href="#support" id="support" style="color: inherit; text-decoration: none;">
+					<h2>Support</h2>
+				</a>
+				<p>Feel free to DM me on Twitter <a href="https://twitter.com/nikoisonfire">@nikoisonfire</a></p>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
+				</a>
+				<p>As this is my first open source project, I&#39;d love to hear some feedback and feel free to submit pull requests, bugs and issues – or feature requests. Your contribution is very much appreciated!</p>
+				<p>I&#39;m always looking to grow as a developer, so be sure to go as harsh and constructive as nesseccary ;-)</p>
+				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+					<h2>License</h2>
+				</a>
+				<p><a href="https://choosealicense.com/licenses/mit/">MIT</a></p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
