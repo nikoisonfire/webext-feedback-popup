@@ -97,12 +97,13 @@ class WebExtRatingModal {
     this._onClose = onClose || noop;
 
     // Show the modal if it's showtime and manual-mode is disabled (default)
-    if (this.isShowtime() && !this._manual) {
-      this.isShownEnoughTimes().then((result) => {
-        console.log("result:", result);
-        if (!result) this.showModal();
-      });
-    }
+    this.isShowtime().then((result) => {
+      if (result && !this._manual) {
+        this.isShownEnoughTimes().then((result) => {
+          if (!result) this.showModal();
+        });
+      }
+    });
   }
 
   // Set Modal CSS styling
@@ -312,7 +313,6 @@ class WebExtRatingModal {
 
     subtext.classList.add("fbm-text");
     subtext.innerHTML = this._text;
-    console.log(detect(navigator.userAgent));
 
     modalEl.classList.add("fbm-modal");
     modalEl.appendChild(logo);
@@ -381,7 +381,6 @@ class WebExtRatingModal {
   };
 
   private addToCache = (): void => {
-    console.log("adding to cache", browser.storage.local);
     browser.storage.local
       .get("feedbackprompt")
       .then((data) => {
@@ -397,30 +396,32 @@ class WebExtRatingModal {
       .catch((error) => console.log(error));
   };
   // Is it time to show the modal yet? (true/false)
-  private isShowtime = (): boolean => {
-    const now = new Date(Date.now());
-    // Declaration if the modal hasn't been shown already.
-    let lastDate = this._installDate.getTime();
+  private isShowtime = async () => {
+    return new Promise((resolve, reject) => {
+      // If the modal is already shown use the last "shown" date, not the installDate
+      browser.storage.local
+        .get("feedbackprompt")
+        .then((data) => {
+          const now = new Date(Date.now());
+          // Declaration if the modal hasn't been shown already.
+          let lastDate = this._installDate.getTime();
 
-    // If the modal is already shown use the last "shown" date, not the installDate
-    browser.storage.local
-      .get("feedbackprompt")
-      .then((data) => {
-        if (data.feedbackprompt && data.feedbackprompt.length > 0) {
-          const times = data.feedbackprompt;
-          lastDate = times[times.length - 1];
-        }
-      })
-      .catch((error) => console.log(error));
+          if (data.feedbackprompt && data.feedbackprompt.length > 0) {
+            const times = data.feedbackprompt;
+            lastDate = times[times.length - 1];
+          }
 
-    // Calculate the time passed to see if it's time to show the modal again
-    const timePassed = now.getTime() - lastDate;
+          // Calculate the time passed to see if it's time to show the modal again
+          const timePassed = now.getTime() - lastDate;
 
-    if (timePassed > this._timeout) {
-      return true;
-    } else {
-      return false;
-    }
+          if (timePassed > this._timeout) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch((error) => reject(error));
+    });
   };
 
   // check if modal has already been shown too many times
@@ -431,7 +432,6 @@ class WebExtRatingModal {
         .then((data) => {
           if (data.feedbackprompt && data.feedbackprompt.length > 0) {
             const times = data.feedbackprompt;
-            console.log("Freq:", this._frequency, "t-length:", times.length);
             if (times.length >= this._frequency) {
               resolve(true);
               return;
