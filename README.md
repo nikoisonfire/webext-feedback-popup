@@ -24,7 +24,7 @@ You only have to initialize the modal using the constructor and a bunch of param
 It auto-detects the users browser and redirects them to the correct store.
 
 ```javascript
-import WebExtFeedbackPrompt from "webext-feedback-prompt";
+import WebExtFeedbackPrompt from "webext-feedbackprompt";
 
 // On some compilers this can be 'url:./xyz.png'
 import thisIsMyLogo from "./xyz.png";
