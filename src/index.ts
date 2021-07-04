@@ -56,6 +56,7 @@ class WebExtRatingModal {
     installDate,
     storeLinks,
     logo,
+    frequency,
     timeout,
     theme,
     onOpen,
@@ -67,6 +68,7 @@ class WebExtRatingModal {
     installDate: Date;
     storeLinks: Record<Browser, string>;
     logo?: string;
+    frequency?: number;
     timeout?: number;
     theme?: string;
     onOpen?: () => void;
@@ -85,6 +87,8 @@ class WebExtRatingModal {
     this._theme = theme || "light";
     this._storeLinks = storeLinks;
 
+    this._frequency = frequency || 1;
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const noop = function () {};
 
@@ -94,9 +98,10 @@ class WebExtRatingModal {
 
     // Show the modal if it's showtime and manual-mode is disabled (default)
     if (this.isShowtime() && !this._manual) {
-      if (!this.isShownEnoughTimes()) {
-        this.showModal();
-      }
+      this.isShownEnoughTimes().then((result) => {
+        console.log("result:", result);
+        if (!result) this.showModal();
+      });
     }
   }
 
@@ -418,25 +423,25 @@ class WebExtRatingModal {
     }
   };
 
-  // TODO: async flag change ?? cb??
-
   // check if modal has already been shown too many times
-  private isShownEnoughTimes = (): boolean => {
-    let flag = false;
-    browser.storage.local
-      .get("feedbackprompt")
-      .then((data) => {
-        if (data.feedbackprompt && data.feedbackprompt.length > 0) {
-          const times = data.feedbackprompt;
-          console.log("Freq:", this._frequency, "t-length:", times.length);
-          if (times.length >= this._frequency) {
-            flag = true;
+  private isShownEnoughTimes = async () => {
+    return new Promise((resolve, reject) => {
+      browser.storage.local
+        .get("feedbackprompt")
+        .then((data) => {
+          if (data.feedbackprompt && data.feedbackprompt.length > 0) {
+            const times = data.feedbackprompt;
+            console.log("Freq:", this._frequency, "t-length:", times.length);
+            if (times.length >= this._frequency) {
+              resolve(true);
+              return;
+            }
           }
-        }
-      })
-      .catch((error) => console.log(error));
-    console.log("flag: ", flag);
-    return flag;
+          resolve(false);
+          return;
+        })
+        .catch((error) => reject(error));
+    });
   };
 
   /**
