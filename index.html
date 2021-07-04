@@ -89,7 +89,7 @@
 <span style="color: #000000">  </span><span style="color: #001080">window:</span><span style="color: #000000"> </span><span style="color: #001080">window</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">headline:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Would you mind sparing some feedback?&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">text:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;We&#039;ve put a lot of love into this project, would you mind sharing your thoughts and maybe a feedback on it?&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">  </span><span style="color: #001080">installDate:</span><span style="color: #000000"> </span><span style="color: #001080">idate</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">installDate:</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Date</span><span style="color: #000000">(</span><span style="color: #098658">2020</span><span style="color: #000000">, </span><span style="color: #098658">01</span><span style="color: #000000">, </span><span style="color: #098658">01</span><span style="color: #000000">, </span><span style="color: #098658">10</span><span style="color: #000000">, </span><span style="color: #098658">00</span><span style="color: #000000">, </span><span style="color: #098658">00</span><span style="color: #000000">),</span>
 <span style="color: #000000">  </span><span style="color: #001080">frequency:</span><span style="color: #000000"> </span><span style="color: #098658">2</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">timeout:</span><span style="color: #000000"> </span><span style="color: #098658">20000</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">logo:</span><span style="color: #000000"> </span><span style="color: #001080">thisIsMyLogo</span><span style="color: #000000">,</span>
@@ -146,7 +146,7 @@
 						</tr>
 						<tr>
 							<td><code>storeLinks</code></td>
-							<td><code>Object</code> {browser: link, ...}</td>
+							<td><code>{browser: link, ...}</code></td>
 							<td>links to your products on the stores i.e. <code>{firefox: &quot;https://....&quot;, chrome: ...}</code></td>
 							<td>{}</td>
 							<td>required</td>
@@ -181,14 +181,14 @@
 						</tr>
 						<tr>
 							<td><code>onOpen</code></td>
-							<td><code>fn</code>: void</td>
+							<td><code>fn: void</code></td>
 							<td>function that get&#39;s executed when the modal is opened, this can be useful for things like adding body-padding, sending stats to a server etc.</td>
 							<td>do Nothing</td>
 							<td>optional</td>
 						</tr>
 						<tr>
 							<td><code>onClose</code></td>
-							<td><code>fn</code>: void</td>
+							<td><code>fn: void</code></td>
 							<td>function that get&#39;s executed when the modal is closed, this can be useful for things like removing body-padding, etc.</td>
 							<td>do Nothing</td>
 							<td>optional</td>
@@ -236,8 +236,8 @@
 
 <span style="color: #001080">fbm</span><span style="color: #000000">.</span><span style="color: #795E26">setStyle</span><span style="color: #000000">(</span><span style="color: #001080">styleString</span><span style="color: #000000">)</span>
 </code></pre>
-				<p><strong>Warning: Currently you cannot <em>overwrite</em> certain classes only unless you are using !important in your own stylesheets.</strong></p>
-				<p><strong>setStyle(...) requires you to replace <em>all stylings</em> for the modal. You can find the default styling to customize certain classes here: <a href="/DEFAULT_STYLES.md">DEFAULT_STYLES.md</a>.</strong></p>
+				<p><strong>Warning</strong>: Currently you cannot <strong>overwrite</strong> certain classes only unless you are using <code>!important</code> in your own stylesheets.</p>
+				<p><em>setStyle(...) requires you to replace <strong>all stylings</strong> for the modal. You can find the default styling to customize certain classes here: <a href="/DEFAULT_STYLES.md">DEFAULT_STYLES.md</a>.</em></p>
 				<a href="#support" id="support" style="color: inherit; text-decoration: none;">
 					<h2>Support</h2>
 				</a>
