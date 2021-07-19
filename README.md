@@ -8,6 +8,7 @@ Currently supported:
 - Firefox
 - Edge
 - Safari
+- Opera
 
 ## Screenshots
 
@@ -38,7 +39,7 @@ const fbm = new WebExtFeedbackPopup({
   window: window,
   headline: "Would you mind sparing some feedback?",
   text: "We've put a lot of love into this project, would you mind sharing your thoughts and maybe a feedback on it?",
-  installDate: new Date(2020, 01, 01, 10, 00, 00),
+  installDate: new Date(2020, 1, 1, 10, 0, 0),
   frequency: 2,
   timeout: 20000,
   logo: thisIsMyLogo,
@@ -48,6 +49,7 @@ const fbm = new WebExtFeedbackPopup({
       "https://chrome.google.com/webstore/detail/grammarly-for-chrome/kbfnbcaeplbcioakkpcpgfkobkghlhen",
     edge: "https://www.microsoft.com/en-us/p/grammarly-for-microsoft-edge/9p59wxtbhzzm?activetab=pivot:overviewtab",
     safari: "https://apps.apple.com/us/app/grammarly-for-safari/id1462114288",
+    opera: "https://addons.opera.com/en/extensions/details/translator/",
   },
 });
 ```
