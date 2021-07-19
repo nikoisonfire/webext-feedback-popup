@@ -1,21 +1,23 @@
-export type Browser = "webkit" | "chrome" | "firefox" | "safari" | "edge";
+export type Browser = "chrome" | "firefox" | "safari" | "edge" | "opera";
 
 type BrowserObject = Record<Browser, boolean>;
 
 function detect(userAgent: string): BrowserObject {
   const browser = {
-    webkit: false,
     chrome: false,
     firefox: false,
     safari: false,
     edge: false,
+    opera: false,
   };
 
   if (!userAgent) {
     return browser;
   }
 
-  const webkit = userAgent.match(/Web[kK]it[/]{0,1}([\d.]+)/);
+  const opera =
+    userAgent.match(/Opera\/]{1}([\d.]+)/) ||
+    userAgent.match(/(Chrome)(.+)OPR\/{1}([\d.]+)/);
   const chrome =
     userAgent.match(/Chrome\/([\d.]+)/) || userAgent.match(/CriOS\/([\d.]+)/);
   const firefox = userAgent.match(/Firefox\/([\d.]+)/);
@@ -24,9 +26,6 @@ function detect(userAgent: string): BrowserObject {
   );
   const edge = userAgent.match(/Edge\/(\d{2,}\.[\d\w]+)$/);
 
-  if (webkit && !edge) {
-    browser.webkit = true;
-  }
   if (chrome && !edge) {
     browser.chrome = true;
   }
@@ -38,6 +37,9 @@ function detect(userAgent: string): BrowserObject {
   }
   if (edge) {
     browser.edge = true;
+  }
+  if (opera) {
+    browser.opera = true;
   }
 
   return browser;
