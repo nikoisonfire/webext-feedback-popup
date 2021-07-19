@@ -6,6 +6,7 @@ import * as chrome_icon from "url:./icons/chrome-logo.png";
 import * as safari_icon from "url:./icons/safari-logo.png";
 import * as edge_icon from "url:./icons/edge-logo.png";
 import * as firefox_icon from "url:./icons/firefox-logo.png";
+import * as opera_icon from "url:./icons/opera-logo.png";
 
 class WebExtFeedbackPopup {
   // Frontend modal features
@@ -522,6 +523,9 @@ class WebExtFeedbackPopup {
     }
     if (filter.includes("edge")) {
       return [edge_icon, "Visit the Microsoft Store"];
+    }
+    if (filter.includes("opera")) {
+      return [opera_icon, "Visit Opera Addons"];
     }
     return chrome_icon;
   };
